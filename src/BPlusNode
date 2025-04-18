@@ -1,0 +1,8 @@
+abstract class BPlusNode {
+    abstract void insert(int key, BPlusTree tree);
+    abstract boolean search(int key);
+    abstract List<Integer> rangeSearch(int start, int end);
+    abstract void delete(int key, BPlusTree tree);
+    abstract void print();
+    abstract boolean isLeaf();
+}

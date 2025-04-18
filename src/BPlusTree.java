@@ -41,6 +41,10 @@ class BPlusTree {
     public void printTree() {
         root.print("");
     }
+    public boolean search(int key) {
+        return root.search(key);
+    }
+    
 
     // --- Inner Classes Below ---
 
