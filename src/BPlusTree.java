@@ -3,11 +3,11 @@ import java.util.*;
 
 class BPlusTree {
     int order;
-    Node root;
+    BPlusNode root;
 
     public BPlusTree(int order) {
         this.order = order;
-        this.root = new LeafNode();
+        this.root = new BPlusLeafNode();
     }
 
     // Dense insert: Sorted insertion
@@ -27,13 +27,14 @@ class BPlusTree {
     }
 
     public void insert(int key) {
-        SplitResult result = root.insert(key, order);
+        SplitResult result = root.insert(key, this);  // Pass the tree as context
         if (result != null) {
+            // If there is a split, create a new root
             InternalNode newRoot = new InternalNode();
-            newRoot.keys.add(result.newKey);
-            newRoot.children.add(result.left);
-            newRoot.children.add(result.right);
-            root = newRoot;
+            newRoot.keys.add(result.newKey);  // Add the "up" key to the internal node
+            newRoot.children.add(result.left);  // Add the left child
+            newRoot.children.add(result.right);  // Add the right child
+            root = newRoot;  // Set the new internal node as the root
         }
     }
 
@@ -41,39 +42,39 @@ class BPlusTree {
     public void printTree() {
         root.print("");
     }
+
     public boolean search(int key) {
         return root.search(key);
     }
-    
 
     // --- Inner Classes Below ---
 
-    abstract class Node {
-        abstract SplitResult insert(int key, int order);
+    abstract class BPlusNode {
+        abstract SplitResult insert(int key, BPlusTree tree);
         abstract void print(String indent);
     }
 
-    class LeafNode extends Node {
+    class BPlusLeafNode extends BPlusNode {
         List<Integer> keys = new ArrayList<>();
-        LeafNode next;
+        BPlusLeafNode next;
 
         @Override
-        SplitResult insert(int key, int order) {
+        SplitResult insert(int key, BPlusTree tree) {
             int pos = Collections.binarySearch(keys, key);
             if (pos >= 0) return null; // Duplicate, ignore
 
             keys.add(-pos - 1, key);
 
-            if (keys.size() > order) {
+            if (keys.size() > tree.order) {
                 int mid = keys.size() / 2;
-                LeafNode rightNode = new LeafNode();
+                BPlusLeafNode rightNode = new BPlusLeafNode();
                 rightNode.keys.addAll(keys.subList(mid, keys.size()));
                 keys = new ArrayList<>(keys.subList(0, mid));
 
                 rightNode.next = this.next;
                 this.next = rightNode;
 
-                return new SplitResult(rightNode.keys.get(0), this, rightNode);
+                return new SplitResult(rightNode.keys.get(0), this, rightNode); // Passing BPlusNode instead of BPlusLeafNode
             }
 
             return null;
@@ -83,23 +84,27 @@ class BPlusTree {
         void print(String indent) {
             System.out.println(indent + "Leaf: " + keys);
         }
+
+        boolean search(int key) {
+            return keys.contains(key);
+        }
     }
 
-    class InternalNode extends Node {
+    class InternalNode extends BPlusNode {
         List<Integer> keys = new ArrayList<>();
-        List<Node> children = new ArrayList<>();
+        List<BPlusNode> children = new ArrayList<>();
 
         @Override
-        SplitResult insert(int key, int order) {
+        SplitResult insert(int key, BPlusTree tree) {
             int idx = findChildIndex(key);
-            SplitResult result = children.get(idx).insert(key, order);
+            SplitResult result = children.get(idx).insert(key, tree);
 
             if (result != null) {
                 keys.add(idx, result.newKey);
                 children.set(idx, result.left);
                 children.add(idx + 1, result.right);
 
-                if (keys.size() >= order) {
+                if (keys.size() >= tree.order) {
                     int mid = keys.size() / 2;
                     InternalNode rightNode = new InternalNode();
 
@@ -111,7 +116,7 @@ class BPlusTree {
                     keys = new ArrayList<>(keys.subList(0, mid));
                     children = new ArrayList<>(children.subList(0, mid + 1));
 
-                    return new SplitResult(upKey, this, rightNode);
+                    return new SplitResult(upKey, this, rightNode);  // Returning BPlusNode here too
                 }
             }
 
@@ -127,18 +132,21 @@ class BPlusTree {
         @Override
         void print(String indent) {
             System.out.println(indent + "Internal: " + keys);
-            for (Node child : children) {
+            for (BPlusNode child : children) {
                 child.print(indent + "  ");
             }
         }
     }
 
+    // --- SplitResult Class ---
+
     class SplitResult {
         int newKey;
-        Node left;
-        Node right;
+        BPlusNode left;
+        BPlusNode right;
 
-        SplitResult(int newKey, Node left, Node right) {
+        // Constructor for SplitResult
+        SplitResult(int newKey, BPlusNode left, BPlusNode right) {
             this.newKey = newKey;
             this.left = left;
             this.right = right;
