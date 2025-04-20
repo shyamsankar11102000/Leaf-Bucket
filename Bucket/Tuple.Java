@@ -1,8 +1,8 @@
 package Bucket;
 public class Tuple {
-    private String attr1; // Can be A, B, or C depending on the context
-    private int attr2;    // Usually B (common join attribute)
-    private String attr3; // Can be C (when used in join results)
+    public String attr1; // Can be A, B, or C depending on the context
+    public int attr2;    // Usually B (common join attribute)
+    public String attr3; // Can be C (when used in join results)
 
     // Constructor for 2-attribute tuple (R or S)
     public Tuple(String attr1, int attr2) {

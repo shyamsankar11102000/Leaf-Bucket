@@ -11,14 +11,24 @@ public class VirtualMemory {
     public VirtualMemory() {
         memory = new ArrayList<>();
     }
+    
 
     // Read a block from virtual memory
-    public List<Tuple> readBlock(int blockIndex) {
+    public List<Tuple> getBlock(int blockIndex) {
         if (blockIndex >= 0 && blockIndex < memory.size()) {
             return memory.get(blockIndex); // Return the block if it's within memory bounds
         }
         return null; // Block index is out of bounds
     }
+
+    public void loadBlock(List<Tuple> block) {
+        if (memory.size() < MEMORY_CAPACITY) {
+            memory.add(block);
+        } else {
+            System.out.println("Memory full. Can't load more blocks.");
+        }
+    }
+    
 
     // Write a block to virtual memory
     public void writeBlock(List<Tuple> block) {

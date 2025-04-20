@@ -39,6 +39,19 @@ public class VirtualDisk {
         }
         return disk.get(relationName).size();
     }
+    public List<List<Tuple>> getRelationBlocks(String relationName) {
+        return disk.getOrDefault(relationName, new ArrayList<>());
+    }
+    public List<Tuple> getAllTuples(String relationName) {
+        List<Tuple> allTuples = new ArrayList<>();
+        List<List<Tuple>> blocks = disk.getOrDefault(relationName, new ArrayList<>());
+    
+        for (List<Tuple> block : blocks) {
+            allTuples.addAll(block);
+        }
+    
+        return allTuples;
+    }
 
     // Helper method to check if a block exists in the disk (for debugging)
     public boolean blockExists(String relationName, int blockIndex) {
