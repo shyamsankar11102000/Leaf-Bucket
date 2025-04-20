@@ -1,5 +1,4 @@
 package Bucket;
-
 public class Tuple {
     private String attr1; // Can be A, B, or C depending on the context
     private int attr2;    // Usually B (common join attribute)
@@ -18,6 +17,7 @@ public class Tuple {
         this.attr2 = attr2;
         this.attr3 = attr3;
     }
+    
 
     public String getAttr1() {
         return attr1;
