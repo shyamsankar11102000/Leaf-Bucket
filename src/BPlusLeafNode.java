@@ -1,8 +1,10 @@
 package src;
+
 import java.util.*;
 
 import src.BPlusTree.SplitResult;
-class BPlusLeafNode extends BPlusNode {
+
+public class BPlusLeafNode extends BPlusNode {
     List<Integer> keys;
     BPlusLeafNode next;
 
@@ -13,34 +15,28 @@ class BPlusLeafNode extends BPlusNode {
 
     @Override
     SplitResult insert(int key, BPlusTree tree) {
-        // Insert the key in sorted order
         int pos = Collections.binarySearch(keys, key);
-        if (pos >= 0) return null;  // If the key is already present, return null
-        
-        // Insert the key at the correct position
-        keys.add(-pos - 1, key);
-        
-        // Handle splitting if the node exceeds the order
+        if (pos >= 0) return null; // Duplicate key, no insertion
+
+        keys.add(-pos - 1, key); // Insert at the correct sorted position
+
+        // If overflow, split
         if (keys.size() > tree.order) {
             int mid = keys.size() / 2;
-            
-            // Create a new leaf node to hold the second half of the keys
-            BPlusLeafNode newLeaf = new BPlusLeafNode();
-            newLeaf.keys.addAll(keys.subList(mid, keys.size()));
+
+            BPlusLeafNode rightNode = new BPlusLeafNode();
+            rightNode.keys.addAll(keys.subList(mid, keys.size()));
             keys = new ArrayList<>(keys.subList(0, mid));
-            
-            // Link the current leaf node to the new leaf node
-            newLeaf.next = this.next;
-            this.next = newLeaf;
-            
-            // Return the split result (new key, left node, right node)
-            int newKey = newLeaf.keys.get(0);  // The first key of the new leaf node becomes the "up" key
-            return new SplitResult(newKey, this, newLeaf);  // Return the result for splitting
+
+            rightNode.next = this.next;
+            this.next = rightNode;
+
+            int newKey = rightNode.keys.get(0); // First key of the right node
+            return new BPlusTree.SplitResult(newKey, this, rightNode); // Return as BPlusNode
         }
-        
-        return null;  // No split occurred
+
+        return null; // No split
     }
-    
 
     @Override
     boolean search(int key) {
@@ -51,20 +47,22 @@ class BPlusLeafNode extends BPlusNode {
     List<Integer> rangeSearch(int start, int end) {
         List<Integer> result = new ArrayList<>();
         BPlusLeafNode current = this;
+
         while (current != null) {
-            for (int key : current.keys) {
-                if (key >= start && key <= end) result.add(key);
-                else if (key > end) return result;
+            for (int k : current.keys) {
+                if (k >= start && k <= end) result.add(k);
+                else if (k > end) return result;
             }
             current = current.next;
         }
+
         return result;
     }
 
     @Override
     void delete(int key, BPlusTree tree) {
         keys.remove(Integer.valueOf(key));
-        // handle underflow and rebalancing
+        // Rebalancing or merge logic can go here if needed
     }
 
     @Override
@@ -77,4 +75,3 @@ class BPlusLeafNode extends BPlusNode {
         return true;
     }
 }
-
