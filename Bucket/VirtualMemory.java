@@ -3,53 +3,52 @@ package Bucket;
 import java.util.*;
 
 public class VirtualMemory {
-    // ArrayList to simulate the virtual memory; can hold 15 blocks as per the problem description
-    private List<List<Tuple>> memory;
-    private final int MEMORY_CAPACITY = 15;
+    // Using a Queue to enforce FIFO behavior naturally
+    private Queue<List<Tuple>> memory;
+    private final int MEMORY_CAPACITY = 100;
 
-    // Constructor
     public VirtualMemory() {
-        memory = new ArrayList<>();
+        memory = new LinkedList<>();
     }
-    
 
-    // Read a block from virtual memory
+    // Read a block at a specific index (convert queue to list temporarily)
     public List<Tuple> getBlock(int blockIndex) {
         if (blockIndex >= 0 && blockIndex < memory.size()) {
-            return memory.get(blockIndex); // Return the block if it's within memory bounds
+            return new ArrayList<>(memory).get(blockIndex);
         }
-        return null; // Block index is out of bounds
+        return null;
     }
 
+    // Add a block to memory with FIFO eviction
     public void loadBlock(List<Tuple> block) {
-        if (memory.size() < MEMORY_CAPACITY) {
-            memory.add(block);
-        } else {
-            System.out.println("Memory full. Can't load more blocks.");
-        }
-    }
-    
-
-    // Write a block to virtual memory
-    public void writeBlock(List<Tuple> block) {
         if (memory.size() >= MEMORY_CAPACITY) {
-            memory.remove(0); // Remove the oldest block if memory is full (FIFO strategy)
+            memory.poll(); // Remove the oldest block
         }
-        memory.add(block); // Add the new block
+        memory.offer(block);
     }
 
-    // Check if the block is in memory
-    public boolean isBlockInMemory(int blockIndex) {
-        return blockIndex >= 0 && blockIndex < memory.size();
+    // Alias for loadBlock (same behavior)
+    public void writeBlock(List<Tuple> block) {
+        loadBlock(block);
     }
 
-    // Get the number of blocks currently in memory
+    public boolean isBlockInMemory(List<Tuple> block) {
+        return memory.contains(block);
+    }
+
     public int getNumBlocks() {
         return memory.size();
     }
 
-    // Helper method to clear all blocks from memory (for debugging or reset)
     public void clear() {
         memory.clear();
+    }
+
+    // Optional debug method
+    public void printMemoryState() {
+        int i = 0;
+        for (List<Tuple> block : memory) {
+            System.out.println("Block " + (i++) + ": " + block);
+        }
     }
 }

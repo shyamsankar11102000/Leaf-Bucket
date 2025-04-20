@@ -26,8 +26,9 @@ public class ExperimentRunner {
 
         // --- 5.2 Generate R with B-values between 20,000 and 30,000 ---
         int numTuples = 1200;
-        DataGenerator.generateRelationR_FromRange(disk, "R", numTuples, 20000, 30000); // Part 5.2
-        List<Tuple> joinResult2 = joiner.performHashJoin("R2", "S");
+        DataGenerator.generateRelationR_FromRange(disk, "R2", numTuples, 20000, 30000); // Part 5.2
+        HashJoin joiner2 = new HashJoin(disk, memory);
+        List<Tuple> joinResult2 = joiner2.performHashJoin("R2", "S");
         System.out.println("Experiment 5.2 - Join result size: " + joinResult2.size());
 
         System.out.println("Joined tuples (5.2):");
