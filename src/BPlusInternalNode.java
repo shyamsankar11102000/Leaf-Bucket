@@ -32,7 +32,6 @@ public class BPlusInternalNode extends BPlusNode {
 
                 int upKey = keys.get(mid);
 
-                // Shrink current node's keys and children
                 keys = new ArrayList<>(keys.subList(0, mid));
                 children = new ArrayList<>(children.subList(0, mid + 1));
 
@@ -64,7 +63,6 @@ public class BPlusInternalNode extends BPlusNode {
     @Override
     void delete(int key, BPlusTree tree) {
         children.get(findChildIndex(key)).delete(key, tree);
-        // Rebalancing or merge logic can go here if needed
     }
 
     @Override

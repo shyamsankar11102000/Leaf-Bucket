@@ -16,7 +16,7 @@ public class HashJoin {
         List<Tuple> joinResult = new ArrayList<>();
 
         for (int i = 0; i < JoinUtils.NUM_PARTITIONS; i++) {
-            List<Tuple> rTuples = flatten(rPartitions.get(i));  // load entire Rᵢ into memory
+            List<Tuple> rTuples = flatten(rPartitions.get(i));  
             Map<Integer, List<Tuple>> hashTable = new HashMap<>();
             for (Tuple t : rTuples) {
                 hashTable.computeIfAbsent(t.attr2, k -> new ArrayList<>()).add(t);
@@ -24,11 +24,11 @@ public class HashJoin {
 
             List<List<Tuple>> sBlocks = sPartitions.get(i);
             for (List<Tuple> block : sBlocks) {
-                memory.loadBlock(block); // simulate read
+                memory.loadBlock(block); 
                 for (Tuple s : block) {
                     List<Tuple> matches = hashTable.getOrDefault(s.attr2, Collections.emptyList());
                     for (Tuple r : matches) {
-                        joinResult.add(new Tuple(r.attr1, r.attr2, s.attr3)); // Join (A, B, C)
+                        joinResult.add(new Tuple(r.attr1, r.attr2, s.attr3)); 
                     }
                 }
             }
@@ -49,7 +49,7 @@ public class HashJoin {
                 int partition = JoinUtils.hashFunction(t.attr2);
                 List<List<Tuple>> partitionBlocks = partitions.get(partition);
 
-                // add tuple to last block or start a new block
+                
                 if (partitionBlocks.isEmpty() || partitionBlocks.get(partitionBlocks.size() - 1).size() >= JoinUtils.BLOCK_SIZE) {
                     partitionBlocks.add(new ArrayList<>());
                 }

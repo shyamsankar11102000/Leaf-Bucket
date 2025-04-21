@@ -17,13 +17,13 @@ public class DataGenerator {
         }
 
         List<Integer> recordList = new ArrayList<>(uniqueKeys);
-        Collections.sort(recordList); // Optional: sort if needed
+        Collections.sort(recordList); 
         return recordList;
     }
 
     public static void main(String[] args) {
         List<Integer> records = generateRecords(10000, 100000, 200000);
         System.out.println("Generated " + records.size() + " records.");
-        System.out.println("Sample: " + records.subList(0, 10));  // First 10 for a quick check
+        System.out.println("Sample: " + records.subList(0, 10));  
     }
 }

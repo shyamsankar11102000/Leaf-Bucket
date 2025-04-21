@@ -46,14 +46,12 @@ public class BPlusTree {
 
     public void delete(int key) {
         root.delete(key, this);
-        // Optional: root merge handling can be added here
     }
 
     public void printTree() {
         root.print();
     }
 
-    // Inner class to represent the result of a split
     public static class SplitResult {
         public int newKey;
         public BPlusNode left;

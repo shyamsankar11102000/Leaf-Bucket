@@ -16,11 +16,10 @@ public class BPlusLeafNode extends BPlusNode {
     @Override
     SplitResult insert(int key, BPlusTree tree) {
         int pos = Collections.binarySearch(keys, key);
-        if (pos >= 0) return null; // Duplicate key, no insertion
+        if (pos >= 0) return null; 
 
-        keys.add(-pos - 1, key); // Insert at the correct sorted position
+        keys.add(-pos - 1, key); 
 
-        // If overflow, split
         if (keys.size() > tree.order) {
             int mid = keys.size() / 2;
 
@@ -31,11 +30,11 @@ public class BPlusLeafNode extends BPlusNode {
             rightNode.next = this.next;
             this.next = rightNode;
 
-            int newKey = rightNode.keys.get(0); // First key of the right node
-            return new BPlusTree.SplitResult(newKey, this, rightNode); // Return as BPlusNode
+            int newKey = rightNode.keys.get(0);
+            return new BPlusTree.SplitResult(newKey, this, rightNode); 
         }
 
-        return null; // No split
+        return null; 
     }
 
     @Override
@@ -62,7 +61,7 @@ public class BPlusLeafNode extends BPlusNode {
     @Override
     void delete(int key, BPlusTree tree) {
         keys.remove(Integer.valueOf(key));
-        // Rebalancing or merge logic can go here if needed
+        
     }
 
     @Override

@@ -8,7 +8,7 @@ public class ExperimentRunner {
 
     public static void main(String[] args) {
         VirtualDisk disk = new VirtualDisk();
-        VirtualMemory memory = new VirtualMemory(); // 15 blocks in memory
+        VirtualMemory memory = new VirtualMemory(); 
         DataGenerator.generateRelationS(disk); // Part 1: Generate relation S
 
         // --- 5.1 Generate R with B-values from S ---
