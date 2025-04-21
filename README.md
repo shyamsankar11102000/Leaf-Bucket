@@ -1,10 +1,10 @@
 ```
 Leaf&Bucket/
 │
-├── src/          
-│   ├── BPlusTree.java<br>
-│   ├── BPlusNode.java<br>
-│   ├── BPlusLeafNode.java<br>
+├── src/                    # Contains B+ Tree implementation files
+│   ├── BPlusTree.java
+│   ├── BPlusNode.java
+│   ├── BPlusLeafNode.java
 │   └── BPlusInternalNode.java
 │   └── Main.java           # Entry point to run B+ Tree experiments
 │
